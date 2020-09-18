@@ -6,7 +6,7 @@ Tested on EFI boot mode only
 ##Version - Alpha 0.2
 This script allow to shrink an LVM on LUKS Ubuntu Volume
 
-Usage: luksShrink -p <part> -s <size>
+Usage: luksShrink -p part -s size
 
 Example : luksShrink -p /dev/nvme0n1p3 -s 200G
 This is going to shrink /dev/nvme0n1p3 to 200G
