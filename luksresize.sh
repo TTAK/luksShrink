@@ -5,12 +5,12 @@ PROGNAME=$0
 
 usage() {
   cat << EOF >&2
-Usage: $PROGNAME [-p <part>] [-s <size>]
+Usage: $PROGNAME -p <part> -s <size> [-b <keyfile>] [-v]
 
 
 -p <part>: Partition containing the LUKS volume to resize
 -s <size>: New desired size for the LUKS volume
--b <size>: Backup key
+-b <keyfile>: setup a backup key from keyfile to the LUKS volume on slot 7
 -v[v] : Verbose level none : -v : errors, -v : debug
 EOF
   exit 1
