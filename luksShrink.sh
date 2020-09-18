@@ -23,22 +23,25 @@ while getopts p:s o; do
 done
 shift "$((OPTIND - 1))"
 
-UBUNTU_VG="vgubuntu"
+UBUNTU_VG="ubuntu-vg"
 
 #Handle failures
 giveup()
 {
 	#Closing VG if necessary
 	if [ -z ${ubuntuvgopen+x} ]; then vgchange -a n $UBUNTU_VG
-	#Closing cryptdisk if necessary
+  fi
+  #Closing cryptdisk if necessary
 	if [ -z ${cryptopen+x} ]; then cryptsetup close cryptdisk
+  fi
 	exit $1
 }
 
 #get the parent disk of the part given in argument
 getDisk()
 {
-	echo `lsblk -no pkname $1`
+	diskname=`lsblk -no pkname $1`
+  echo /dev/$diskname
 }
 
 #Checking if the disk and part are coherent
