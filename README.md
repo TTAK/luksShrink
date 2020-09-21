@@ -1,7 +1,7 @@
 # luksShrink
 Ubuntu LTS 18 luks volume resize script
 
-<p>Disclaimer, <b>this script is not (yet) intended for production purpose.</b> Do not use it on anything with important data and <b>do a backup beforehand</b>.**</p>
+<p>Disclaimer, <b>this script is not (yet) intended for production purpose.</b> Do not use it on anything with important data and <b>do a backup beforehand</b>.</p>
 
 ## Version - Alpha 0.2 Work in progress
 
