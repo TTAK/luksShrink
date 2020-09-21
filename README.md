@@ -1,6 +1,7 @@
 # luksShrink
 Ubuntu LTS 18->20 luks volume resize script
-Work in progress
+
+##Work in progress
 
 Tested on EFI boot mode only
 
