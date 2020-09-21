@@ -93,6 +93,9 @@ echo "=>selecting $UBUNTU_VG"
 sudo vgchange -ay $UBUNTU_VG || giveup 7
 ubuntuvgopen=1
 
+echo "=>checking vgroup health"
+e2fsck -f /dev/$UBUNTU_VG/root || giveup 10
+
 echo "=>resizing $UBUNTU_VG/root to $newlukssize"
 lvresize -L $newlukssize --resizefs $UBUNTU_VG/root || giveup 8
 
