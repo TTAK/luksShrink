@@ -51,6 +51,18 @@ then
   usage
 fi
 
+#Handle failures
+giveup()
+{
+	#Closing VG if necessary
+	if [ -z ${ubuntuvgopen+x} ]; then vgchange -a n $UBUNTU_VG
+  fi
+  #Closing cryptdisk if necessary
+	if [ -z ${cryptopen+x} ]; then cryptsetup close cryptdisk
+  fi
+	exit $1
+}
+
 #get the parent disk of the part given in argument
 getDisk()
 {
