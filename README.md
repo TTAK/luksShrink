@@ -1,12 +1,12 @@
 # luksShrink
 Ubuntu LTS 18->20 luks volume resize script
 
-##Work in progress
+## Work in progress
 
 Tested on EFI boot mode only
 
 
-##Version - Alpha 0.2
+## Version - Alpha 0.2
 This script allow to shrink an LVM on LUKS Ubuntu Volume
 
 Usage: luksShrink -p part -s size
