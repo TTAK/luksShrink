@@ -8,19 +8,22 @@ usage() {
 Usage: $PROGNAME -p <part> -s <size>
   -p <part>: Partition containing the LUKS volume to resize
   -s <size>: New desired size for the LUKS volume
+  -g <volume group>: Chose volume group instead of standard ubuntu-vg
   -h Print this
 
 EOF
   exit 1
 }
 
-unset part newlukssize
+unset part newlukssize UBUNTU_VG cryptopen ubuntuvgopen
+UBUNTU_VG="ubuntu-vg"
 
-while getopts 'p:s:?h' o;
+while getopts 'p:s:g:?h' o;
 do
         case $o in
                 (p) part=$OPTARG;;
                 (s) newlukssize=$OPTARG;;
+                (g) UBUNTU_VG=$OPTARG;;
                 (h|?) usage ;;
         esac
 done
@@ -62,16 +65,21 @@ echo "Selected disk : $disk   Selected partition : $part"
 
 
 echo "=>Oppening luks crypted volume"
-cryptsetup luksOpen "$part" cryptdisk && cryptopen=1 || giveup 4
+cryptsetup luksOpen "$part" cryptdisk || giveup 4
+cryptopen=1
 
 echo "=>Getting gawk and python3"
-apt-get update && apt-get install -y gawk || giveup 6
+apt-get update && apt-get install -y gawk
+if ! apt-get update && apt-get install; then
+  giveup 6
+fi
 
 echo "=>searching for vg"
 vgscan
 
 echo "=>selecting $UBUNTU_VG"
-sudo vgchange -ay $UBUNTU_VG && ubuntuvgopen=1 || giveup 7
+sudo vgchange -ay $UBUNTU_VG || giveup 7
+ubuntuvgopen=1
 
 echo "=>resizing $UBUNTU_VG/root to $newlukssize"
 lvresize -L $newlukssize --resizefs $UBUNTU_VG/root || giveup 8
@@ -108,10 +116,11 @@ LUKS_OFFSET_SECTORS=`cryptsetup status cryptdisk | grep "offset:" | awk '{print 
 NEW_PARTITION_SECTOR_END=`gawk -M "BEGIN {print $PARTITION_SECTOR_START+($NEW_LUKS_SECTOR_COUNT+$LUKS_OFFSET_SECTORS)-1}"`
 
 echo "=>Close LVM vgroup..."
-vgchange -a n $UBUNTU_VG && unset ubuntuvgopen || giveup 13
-
+vgchange -a n $UBUNTU_VG || giveup 13
+unset ubuntuvgopen
 echo "=>Closing LUKS volume..."
-cryptsetup close cryptdisk && unset cryptopen || giveup 14
+cryptsetup close cryptdisk || giveup 14
+unset cryptopen
 
 echo "=>Resizing partition to $NEW_PARTITION_SECTOR_END (please Enter the value $NEW_PARTITION_SECTOR_END)"
 parted $disk 'unit s resizepart 3' || giveup 15
