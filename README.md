@@ -44,4 +44,4 @@ is going to shrink /dev/nvme0n1p3 to 200G using ubuntu-vg as default volume grou
 ```bash
 luksShrink -p /dev/nvme0n1p3 -s 300G -g vgcustom
 ```
-is going to shrink /dev/nvme0n1p3 to 300G using vgcustom as default volume group
+is going to shrink /dev/nvme0n1p3 to 300G using vgcustom as volume group
