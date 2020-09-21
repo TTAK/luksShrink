@@ -1,4 +1,4 @@
-#! /bin/sh -
+#!/bin/bash
 #TTAK Ubuntu 18/20 LTS LUKS resize script Alpha V0.2
 
 PROGNAME=$0
@@ -6,36 +6,47 @@ PROGNAME=$0
 usage() {
   cat << EOF >&2
 Usage: $PROGNAME -p <part> -s <size>
-
--p <part>: Partition containing the LUKS volume to resize
--s <size>: New desired size for the LUKS volume
+  -p <part>: Partition containing the LUKS volume to resize
+  -s <size>: New desired size for the LUKS volume
+  -h Print this
 
 EOF
   exit 1
 }
 
-while getopts p:s o; do
-	case $o in
-		(p) part=$OPTARG;;
-		(s) newlukssize=$OPTARG;;
-		(*) usage
-	esac
+unset part newlukssize
+
+while getopts 'p:s:?h' o;
+do
+        case $o in
+                (p) part=$OPTARG;;
+                (s) newlukssize=$OPTARG;;
+                (h|?) usage ;;
+        esac
 done
 shift "$((OPTIND - 1))"
 
-UBUNTU_VG="ubuntu-vg"
 
-#Handle failures
-giveup()
-{
-	#Closing VG if necessary
-	if [ -z ${ubuntuvgopen+x} ]; then vgchange -a n $UBUNTU_VG
-  fi
-  #Closing cryptdisk if necessary
-	if [ -z ${cryptopen+x} ]; then cryptsetup close cryptdisk
-  fi
-	exit $1
-}
+#check the size existence
+if [[ -z $newlukssize ]]
+then
+  echo "Error : Missing new partition size"
+  usage
+fi
+
+#check if a part name have been given
+if [[ -z $part ]]
+then
+  echo "Error : Missing partition name"
+  usage
+fi
+
+#check the name of the target partition
+if [[ $part != /dev/* ]]
+then
+  echo "Error : Invalid target partition name"
+  usage
+fi
 
 #get the parent disk of the part given in argument
 getDisk()
