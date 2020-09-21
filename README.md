@@ -4,14 +4,18 @@ Ubuntu LTS 18 luks volume resize script
 <p>Disclaimer, <b>this script is not (yet) intended for production purpose.</b> Do not use it on anything with important data and <b>do a backup beforehand</b>.</p>
 
 ## Version - Alpha 0.2 Work in progress
+This script allow to shrink an LVM on LUKS Ubuntu Volume offline
 
-For now, **it should be only used it on a fresh luks full disk Ubuntu 18/20 install**
+**Usage:**
+>luksShrink -p part -s size
+
+For now, **it should be only used it on a fresh luks full disk Ubuntu 18/20 install offline**
 
 <p>It has been tested with Ubuntu 18 in EFI boot mode only but it should also work the same way on with the -g option to select the right Volume Group on Ubuntu 20</p>
 
-This script allow to shrink an LVM on LUKS Ubuntu Volume
 
-Usage: luksShrink -p part -s size
+
+
 
 ## Usecases:
 
@@ -40,4 +44,3 @@ is going to shrink /dev/nvme0n1p3 to 200G using ubuntu-vg as default volume grou
 luksShrink -p /dev/nvme0n1p3 -s 300G -g vgcustom
 ```
 is going to shrink /dev/nvme0n1p3 to 300G using vgcustom as default volume group
-
