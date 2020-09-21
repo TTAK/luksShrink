@@ -17,7 +17,7 @@ Usage: luksShrink -p part -s size
 
 ### Create a working encrypted dualboot windows 10(Bitlocker) + Ubuntu 18/20(LUKS)
 
->####Ubuntu LTS 18/20 dualboot install :
+>#### Ubuntu LTS 18/20 dualboot install :
 1. Install Ubuntu on the whole disk with LVM+LUKS enable
 2. Boot on it to check everything is working
 3. Reboot on the live usb of ubuntu LTS 18/20
@@ -31,10 +31,13 @@ You should now have a fully fonctionnal encrypted dualboot windows 10(Bitlocker)
 
 ## Examples :
 
->luksShrink -p /dev/nvme0n1p3 -s 200G
-
+```bash
+luksShrink -p /dev/nvme0n1p3 -s 200G
+```
 is going to shrink /dev/nvme0n1p3 to 200G using ubuntu-vg as default volume group
 
->luksShrink -p /dev/nvme0n1p3 -s 300G -g vgcustom
-
+```bash
+luksShrink -p /dev/nvme0n1p3 -s 300G -g vgcustom
+```
 is going to shrink /dev/nvme0n1p3 to 300G using vgcustom as default volume group
+
