@@ -5,11 +5,11 @@ PROGNAME=$0
 
 usage() {
   cat << EOF >&2
-Usage: $PROGNAME -p <part> -s <size>
-  -p <part>: Partition containing the LUKS volume to resize
-  -s <size>: New desired size for the LUKS volume
-  -g <volume group>: Chose volume group instead of standard ubuntu-vg
-  -h Print this
+  Usage: luksShrink -p <part> -s <size> [-g <volume group name>] [-h]
+    -p <part> : Partition containing the LUKS volume to resize
+    -s <size> : New desired size for the LUKS volume
+    -g <volume group name> : Chose volume group instead of standard ubuntu-vg
+    -h : Print this
 
 EOF
   exit 1
