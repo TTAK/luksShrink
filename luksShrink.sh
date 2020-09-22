@@ -15,6 +15,11 @@ EOF
   exit 1
 }
 
+if [ "$EUID" -ne 0 ]
+  then echo "Please run this script as root (for ex sudo $PROGNAME ...)"
+  exit
+fi
+
 unset part newlukssize UBUNTU_VG cryptopen ubuntuvgopen
 UBUNTU_VG="ubuntu-vg"
 
@@ -80,17 +85,15 @@ echo "=>Oppening luks crypted volume"
 cryptsetup luksOpen "$part" cryptdisk || giveup 4
 cryptopen=1
 
-echo "=>Getting gawk and python3"
-apt-get update && apt-get install -y gawk
-if ! apt-get update && apt-get install; then
-  giveup 6
-fi
+echo "=>Getting gawk"
+apt-get update || giveup 6
+apt-get install -y gawk || giveup 6
 
 echo "=>searching for vg"
 vgscan
 
 echo "=>selecting $UBUNTU_VG"
-sudo vgchange -ay $UBUNTU_VG || giveup 7
+vgchange -ay $UBUNTU_VG || giveup 7
 ubuntuvgopen=1
 
 echo "=>checking vgroup health"
@@ -102,7 +105,7 @@ lvresize -L $newlukssize --resizefs $UBUNTU_VG/root || giveup 8
 #We need a better way to defrag the LVM PV
 SWAP_PV_POS=`pvs -v --segments /dev/mapper/cryptdisk | grep swap_1 | awk '{print $12}'`
 echo "=>moving swap $SWAP_PV_POS"
-sudo pvmove --alloc anywhere "$SWAP_PV_POS" || giveup 9
+pvmove --alloc anywhere "$SWAP_PV_POS" || giveup 9
 
 echo "=>checking vgroup health"
 e2fsck -f /dev/$UBUNTU_VG/root || giveup 10
