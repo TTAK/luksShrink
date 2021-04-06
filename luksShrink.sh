@@ -68,6 +68,10 @@ giveup()
 	exit $1
 }
 
+getVgPartNb()
+{
+}
+
 #get the parent disk of the part given in argument
 getDisk()
 {
