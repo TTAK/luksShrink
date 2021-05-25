@@ -70,7 +70,7 @@ giveup()
 
 getVgPartNb()
 {
-  echo "${STRING//[!0-9]/}"
+  echo $1 | grep -Eo '[0-9]+$'
 }
 
 #get the parent disk of the part given in argument
