@@ -21,7 +21,7 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 
-unset part newlukssize UBUNTU_VG TEST_ONLY partNB partedSting
+unset part newlukssize UBUNTU_VG TEST_ONLY partNB
 cryptopen=false
 ubuntuvgopen=false
 UBUNTU_VG="ubuntu-vg"
@@ -150,11 +150,10 @@ echo "=>Closing LUKS volume..."
 cryptsetup close cryptdisk || giveup 14
 cryptopen=false
 
-echo "=>Resizing partition to $NEW_PARTITION_SECTOR_END (please Enter the value $NEW_PARTITION_SECTOR_END)"
+echo "=>Resizing partition to $NEW_PARTITION_SECTOR_END"
 partNB=getVgPartNb $part
-partedSting='unit s resizepart $getVgPartNb'
-$TEST_ONLY || parted $disk $partedSting || giveup 15
-$TEST_ONLY && echo $partedSting
+$TEST_ONLY || parted --script $disk unit s resizepart $getVgPartNb $NEW_PARTITION_SECTOR_END || giveup 15
+$TEST_ONLY && echo "parted --script $disk unit s resizepart $getVgPartNb $NEW_PARTITION_SECTOR_END"
 
 echo "=>That's all folks"
 exit 0
