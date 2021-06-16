@@ -21,7 +21,7 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 
-unset part newlukssize UBUNTU_VG TEST_ONLY
+unset part newlukssize UBUNTU_VG TEST_ONLY partNB partedSting
 cryptopen=false
 ubuntuvgopen=false
 UBUNTU_VG="ubuntu-vg"
@@ -65,9 +65,11 @@ fi
 giveup()
 {
 	#Closing VG if necessary
-  $ubuntuvgopen || vgchange -a n $UBUNTU_VG || ubuntuvgopen=false
+  $ubuntuvgopen || vgchange -a n $UBUNTU_VG
+  ubuntuvgopen=false
   #Closing cryptdisk if necessary
-  $cryptopen || cryptsetup close cryptdisk || cryptopen=false
+  $cryptopen || cryptsetup close cryptdisk
+  cryptopen=false
 	exit $1
 }
 
@@ -142,14 +144,17 @@ LUKS_OFFSET_SECTORS=`cryptsetup status cryptdisk | grep "offset:" | awk '{print 
 NEW_PARTITION_SECTOR_END=`gawk -M "BEGIN {print $PARTITION_SECTOR_START+($NEW_LUKS_SECTOR_COUNT+$LUKS_OFFSET_SECTORS)-1}"`
 
 echo "=>Close LVM vgroup..."
-vgchange -a n $UBUNTU_VG || ubuntuvgopen=false || giveup 13
-
+vgchange -a n $UBUNTU_VG || giveup 13
+ubuntuvgopen=false
 echo "=>Closing LUKS volume..."
-cryptsetup close cryptdisk || cryptopen=false || giveup 14
-
+cryptsetup close cryptdisk || giveup 14
+cryptopen=false
 
 echo "=>Resizing partition to $NEW_PARTITION_SECTOR_END (please Enter the value $NEW_PARTITION_SECTOR_END)"
-$TEST_ONLY || parted $disk 'unit s resizepart 3' || giveup 15
+partNB=getVgPartNb $part
+partedSting='unit s resizepart $getVgPartNb'
+$TEST_ONLY || parted $disk $partedSting || giveup 15
+$TEST_ONLY && echo $partedSting
 
 echo "=>That's all folks"
 exit 0
