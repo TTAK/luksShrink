@@ -150,10 +150,10 @@ echo "=>Closing LUKS volume..."
 cryptsetup close cryptdisk || giveup 14
 cryptopen=false
 
-echo "=>Resizing partition to $NEW_PARTITION_SECTOR_END"
+echo "=>Resizing partition to $NEW_PARTITION_SECTOR_END (please Enter the value $NEW_PARTITION_SECTOR_END)"
 partNB=getVgPartNb $part
-$TEST_ONLY || parted --script $disk unit s resizepart $getVgPartNb Yes $NEW_PARTITION_SECTOR_END || giveup 15
-$TEST_ONLY && echo "parted --script $disk unit s resizepart $getVgPartNb $NEW_PARTITION_SECTOR_END"
+$TEST_ONLY || parted $disk 'unit s resizepart 3' || giveup 15
+$TEST_ONLY && echo "parted $disk 'unit s resizepart 3' || giveup 15"
 
 echo "=>That's all folks"
 exit 0
