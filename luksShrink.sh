@@ -151,7 +151,7 @@ cryptsetup close cryptdisk || giveup 14
 cryptopen=false
 
 echo "=>Resizing partition to $NEW_PARTITION_SECTOR_END (please Enter the value $NEW_PARTITION_SECTOR_END)"
-partNB=getVgPartNb $part
+#partNB=getVgPartNb $part (to be patched to detect the right part number)
 $TEST_ONLY || parted $disk 'unit s resizepart 3' || giveup 15
 $TEST_ONLY && echo "parted $disk 'unit s resizepart 3' || giveup 15"
 
